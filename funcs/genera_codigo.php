@@ -9,7 +9,7 @@ header('Pragma: no-cache');
 define('ANCHO', 150);
 define('ALTO', 50);
 define('TAMANIO_FUENTE', 30);
-define('CODIGO_LENGTH', rand(5, 8)); 
+define('CODIGO_LENGTH', rand(5, 7)); 
 define('NUM_LINEAS', 6);
 define('NUM_PUNTOS', 400);
 
