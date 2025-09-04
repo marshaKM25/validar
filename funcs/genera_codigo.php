@@ -1,11 +1,15 @@
 <?php
 session_start();
 
+//Headers de seguridad
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
+
 // Configuraciones
 define('ANCHO', 150);
 define('ALTO', 50);
 define('TAMANIO_FUENTE', 30);
-define('CODIGO_LENGTH', 6);
+define('CODIGO_LENGTH', rand(5, 8)); 
 define('NUM_LINEAS', 6);
 define('NUM_PUNTOS', 400);
 
