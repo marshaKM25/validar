@@ -1,15 +1,18 @@
 <?php
+//debe ser la primera instrucción, sin espacios ni nada antes.
 session_start();
 
-//Headers de seguridad
+// Las cabeceras (headers) DEBEN enviarse ANTES de cualquier
+
+header('Content-Type: image/png');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
 
 // Configuraciones
-define('ANCHO', 150);
+define('ANCHO', 170);
 define('ALTO', 50);
-define('TAMANIO_FUENTE', 30);
-define('CODIGO_LENGTH', rand(5, 7)); 
+define('TAMANIO_FUENTE', 20);
+define('CODIGO_LENGTH', rand(5, 7));
 define('NUM_LINEAS', 6);
 define('NUM_PUNTOS', 400);
 
@@ -19,40 +22,47 @@ for ($i = 0; $i < CODIGO_LENGTH; $i++) {
     $codigo .= $caracteres[random_int(0, strlen($caracteres) - 1)];
 }
 
-$fuente = realpath('../font/Consolas.ttf');
 
-// Guardar en sesión con hash seguro + tiempo de expiración
-    $_SESSION['codigo_verificacion'] = hash('sha256', $codigo);
-    $_SESSION['captcha_time'] = time();
-    $_SESSION['captcha_expires'] = 120; // 2 minutos
+// Esto elimina CUALQUIER problema de permisos con tu directorio /home o SELinux.
+$fuente = '/usr/share/fonts/dejavu/DejaVuSans.ttf';
 
-// Crear imagen
-    $imagen = imagecreatetruecolor(ANCHO, ALTO);
-    $colorFondo = imagecolorallocate($imagen, 255, 255, 255);
-    imagefill($imagen, 0, 0, $colorFondo);
+// Guardar en sesión con hash seguro + tiempo de expiración (sin cambios)
+$_SESSION['codigo_verificacion'] = hash('sha256', $codigo);
+$_SESSION['captcha_time'] = time();
+$_SESSION['captcha_expires'] = 120; // 2 minutos
 
-// Líneas
-    for ($i = 0; $i < NUM_LINEAS; $i++) {
-        $color = imagecolorallocate($imagen, rand(0,255), rand(0,255), rand(0,255));
-        imageline($imagen, 0, rand(0, ALTO), ANCHO, rand(0, ALTO), $color);
-    }
+// Crear imagen 
+$imagen = imagecreatetruecolor(ANCHO, ALTO);
+$colorFondo = imagecolorallocate($imagen, 255, 255, 255);
+imagefill($imagen, 0, 0, $colorFondo);
 
-// Puntos
-    for ($i = 0; $i < NUM_PUNTOS; $i++) {
-        $color = imagecolorallocate($imagen, rand(0,255), rand(0,255), rand(0,255));
-        imagesetpixel($imagen, rand(0, ANCHO), rand(0, ALTO), $color);
-    }
+// Líneas 
+for ($i = 0; $i < NUM_LINEAS; $i++) {
+    $color = imagecolorallocate($imagen, rand(0,255), rand(0,255), rand(0,255));
+    imageline($imagen, 0, rand(0, ALTO), ANCHO, rand(0, ALTO), $color);
+}
+
+// Puntos 
+for ($i = 0; $i < NUM_PUNTOS; $i++) {
+    $color = imagecolorallocate($imagen, rand(0,255), rand(0,255), rand(0,255));
+    imagesetpixel($imagen, rand(0, ANCHO), rand(0, ALTO), $color);
+}
 
 // Escribir cada carácter con distorsión
 for ($i = 0; $i < strlen($codigo); $i++) {
-    $x = 15 + ($i * 20);
+    $x = 10 + ($i * 22); // Ajustamos el espaciado para la nueva fuente
     $y = rand(30, 40);
-    $angulo = rand(-20, 20);
+    $angulo = rand(-15, 15);
     $colorLetra = imagecolorallocate($imagen, rand(0,150), rand(0,150), rand(0,150));
     imagettftext($imagen, TAMANIO_FUENTE, $angulo, $x, $y, $colorLetra, $fuente, $codigo[$i]);
 }
 
-// Enviar imagen
-header('Content-Type: image/png');
+// La cabecera 'Content-Type' ya se envió al principio.
+// Ahora solo enviamos los datos de la imagen y liberamos la memoria.
 imagepng($imagen);
 imagedestroy($imagen);
+
+?>
+
+
+
