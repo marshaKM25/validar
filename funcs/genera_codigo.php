@@ -1,8 +1,12 @@
 <?php
-//debe ser la primera instrucción, sin espacios ni nada antes.
+/**
+ * Este archivo genera y muestra la imagen CAPTCHA.
+ * Utiliza la librería GD de PHP para crear una imagen con texto distorsionado
+ * y ruido visual para dificultar su lectura por bots.
+ **/
 session_start();
 
-// Las cabeceras (headers) DEBEN enviarse ANTES de cualquier
+
 
 header('Content-Type: image/png');
 header('Cache-Control: no-store, no-cache, must-revalidate');
@@ -23,10 +27,10 @@ for ($i = 0; $i < CODIGO_LENGTH; $i++) {
 }
 
 
-// Esto elimina CUALQUIER problema de permisos con tu directorio /home o SELinux.
+// Esto elimina problemas de permisos
 $fuente = '/usr/share/fonts/dejavu/DejaVuSans.ttf';
 
-// Guardar en sesión con hash seguro + tiempo de expiración (sin cambios)
+// Guardar en sesión con hash seguro + tiempo de expiración 
 $_SESSION['codigo_verificacion'] = hash('sha256', $codigo);
 $_SESSION['captcha_time'] = time();
 $_SESSION['captcha_expires'] = 120; // 2 minutos
@@ -50,19 +54,16 @@ for ($i = 0; $i < NUM_PUNTOS; $i++) {
 
 // Escribir cada carácter con distorsión
 for ($i = 0; $i < strlen($codigo); $i++) {
-    $x = 10 + ($i * 22); // Ajustamos el espaciado para la nueva fuente
+    $x = 10 + ($i * 22); // espaciado para lafuente
     $y = rand(30, 40);
     $angulo = rand(-15, 15);
     $colorLetra = imagecolorallocate($imagen, rand(0,150), rand(0,150), rand(0,150));
     imagettftext($imagen, TAMANIO_FUENTE, $angulo, $x, $y, $colorLetra, $fuente, $codigo[$i]);
 }
 
-// La cabecera 'Content-Type' ya se envió al principio.
-// Ahora solo enviamos los datos de la imagen y liberamos la memoria.
+//enviamos los datos de la imagen y liberamos la memoria.
 imagepng($imagen);
 imagedestroy($imagen);
 
 ?>
-
-
 
