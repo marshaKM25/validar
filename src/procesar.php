@@ -74,7 +74,5 @@ unset($_SESSION['captcha'][$formID]); // Un solo uso
 $_SESSION['intentos_por_fingerprint'][$fingerprint]['count'] = 0;
 
 echo "Bienvenido, $nombre";
-
-
-//php -S localhost:8000
 ?>
+
