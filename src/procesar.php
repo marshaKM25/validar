@@ -25,7 +25,7 @@ $fingerprint = hash('sha256', $_SERVER['HTTP_USER_AGENT'] . session_id());
 if(!isset($_SESSION['intentos_por_fingerprint'])){
     $_SESSION['intentos_por_fingerprint'] = [];
 }
-
+                    //todos los usuarios               //ya especifico //que quiero guardar
 $intentosUsuario = $_SESSION['intentos_por_fingerprint'][$fingerprint]['count'] ?? 0;
 $ultimoIntento = $_SESSION['intentos_por_fingerprint'][$fingerprint]['last_attempt'] ?? 0;
 
@@ -51,8 +51,11 @@ if(!$captchaData){
 
 // Verificar expiración
 if(time() - $captchaData['time'] > $tiempoExpiracionCaptcha){
+    //se borrra todo lo de captcha
     unset($_SESSION['captcha'][$formID]);
+    //se restablece todo a 0
     $_SESSION['intentos_por_fingerprint'][$fingerprint]['count'] = 0;
+    //mensaje de error 
     setFlashData('error','El captcha ha expirado. Recarga la página.');
     redirect('index.php');
 }
