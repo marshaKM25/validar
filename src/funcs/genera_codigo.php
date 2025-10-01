@@ -5,18 +5,18 @@ header('Cache-Control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
 
 // Configuraciones
-define('ANCHO', 170);
-define('ALTO', 50);
+define('ANCHO', 175);
+define('ALTO', 65);
 define('CODIGO_LENGTH', rand(5, 7));
-define('NUM_LINEAS', 20);
-define('NUM_PUNTOS', 1100);
-define('NUM_GRAFITI', 20);
-define('NUM_MANCHAS', 50);
+define('NUM_LINEAS', 22);
+define('NUM_PUNTOS', 1005);
+define('NUM_GRAFITI', 10);
+define('NUM_MANCHAS', 30);
 
 $formID = $_GET['form_id'] ?? 'default';
 
 // Caracteres para captcha
-$caracteres = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz123456789';
+$caracteres = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz123456789';
 $codigo = '';
 for ($i = 0; $i < CODIGO_LENGTH; $i++) {
     $codigo .= $caracteres[random_int(0, strlen($caracteres) - 1)];
@@ -55,23 +55,24 @@ for ($i = 0; $i < NUM_PUNTOS; $i++) {
 }
 
 // Letras originales ligeramente deformadas
-for ($i = 0; $i < strlen($codigo); $i++) {
-    $fuente = $fuentes[array_rand($fuentes)];
-    $tamanio = rand(18, 28);
-    
-    // Posición deformada
-    $x = 10 + ($i * 22) + rand(-3,3);
-    $y = rand(25, 45) + rand(-3,3);
-    
-    // Ángulo deformado
-    $angulo = rand(-35, 35);
-    
-    // Escala ligera horizontal o vertical simulando deformación
-    $colorLetra = imagecolorallocate($imagen, rand(0,120), rand(0,120), rand(0,120));
-    
+    for ($i = 0; $i < strlen($codigo); $i++) {
+        $fuente = $fuentes[array_rand($fuentes)];
+        $tamanio = rand(20, 28);
+
+        // Posición ajustada con márgenes
+        $x = 15 + ($i * 22) + rand(-3, 3);
+        $y = rand(35, 55); // margen superior e inferior seguro
+
+         // Ángulo reducido para evitar cortes
+        $angulo = rand(-20, 20);
+
+        // Color de la letra
+        $colorLetra = imagecolorallocate($imagen, rand(0,120), rand(0,120), rand(0,120));
+
     // Dibujar letra real
     imagettftext($imagen, $tamanio, $angulo, $x, $y, $colorLetra, $fuente, $codigo[$i]);
 }
+
 
 // Letras tipo grafiti dispersas
 for ($i = 0; $i < NUM_GRAFITI; $i++) {
@@ -107,4 +108,5 @@ for ($i = 0; $i < 3; $i++) {
 imagepng($imagen);
 imagedestroy($imagen);
 ?>
+
 

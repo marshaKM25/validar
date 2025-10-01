@@ -78,4 +78,3 @@ $_SESSION['intentos_por_fingerprint'][$fingerprint]['count'] = 0;
 
 echo "Bienvenido, $nombre";
 ?>
-
